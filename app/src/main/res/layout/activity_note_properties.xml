@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".NoteProperties"
+    android:orientation="vertical"
+
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Propiedades"
+        android:textSize="20sp"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:layout_marginBottom="10dp"
+        android:textColor="@color/green"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tipo de Nota:"
+        android:layout_marginBottom="5dp"
+        />
+
+    <Spinner android:id="@+id/note_type_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Etiqueta"
+        android:layout_marginBottom="5dp"
+        />
+
+    <EditText android:id="@+id/note_tag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:layout_marginBottom="10dp"
+        android:autofillHints="tag"
+        />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/date_switch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Crear Recordatorio"
+        android:layout_marginBottom="10dp"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal"
+        >
+
+        <EditText
+            android:id="@+id/date_picker_actions"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:editable="false"
+            android:enabled="false"
+            android:text="fecha"
+            android:textIsSelectable="false" />
+
+        <EditText
+            android:id="@+id/time_picker_actions"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:editable="false"
+            android:enabled="false"
+            android:text="hora"
+            android:textIsSelectable="false" />
+
+    </LinearLayout>
+
+    <RadioGroup android:id="@+id/select_visible_or_hidden"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/visibleRBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginBottom="20dp"
+            android:clickable="true"
+            android:text="Visible"
+            android:checked="true"/>
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/hiddenRbtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginBottom="20dp"
+            android:clickable="true"
+            android:text="Oculto"
+            />
+
+    </RadioGroup>
+
+
+
+    <Button android:id="@+id/save_properties_buton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Aceptar"/>
+
+</LinearLayout>

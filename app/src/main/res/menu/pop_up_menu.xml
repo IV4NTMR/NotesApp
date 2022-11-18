@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/showHidden"
+        android:checkable="false"
+        android:enabled="true"
+        android:icon="@drawable/ic_show_hidden_notes"
+        android:title="Mostrar solo notas ocultas"
+        android:visible="true" />
+    <item
+        android:id="@+id/showVisible"
+        android:icon="@drawable/ic_hide_notes"
+        android:title="Esconder notas ocultas" />
+    <item android:id="@+id/showAll"
+        android:enabled="true"
+        android:icon="@drawable/ic_all_notes"
+        android:title="Mostrar todas las notas"
+        android:visible="true" />
+</menu>

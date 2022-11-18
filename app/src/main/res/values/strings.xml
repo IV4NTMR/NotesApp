@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Notas!</string>
+    <string name="eliminar_nota">Eliminar Nota</string>
+    <string name="editar_nota">Editar Nota</string>
+    <string name="informaci_n_de_la_nota">Información de la Nota</string>
+    <string name="alert_title">Eliminar Nota</string>
+    <string name="alert_message">Seguro que quieres eliminar esta nota?</string>
+    <string name="alert_confirm">Eliminar</string>
+    <string name="alert_cancel">Cancelar</string>
+    <string-array name="note_types_array">
+        <item>Normal</item>
+        <item>Lista Simple</item>
+        <item>Lista de Tarea</item>
+        <item>Código</item>
+        <item>Diagrama</item>
+    </string-array>
+</resources>
