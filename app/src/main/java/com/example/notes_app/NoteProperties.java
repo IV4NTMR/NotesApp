@@ -3,10 +3,18 @@ package com.example.notes_app;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -34,12 +42,22 @@ public class NoteProperties extends AppCompatActivity {
     SwitchCompat dateSwitch;
     DatePickerDialog.OnDateSetListener setDateListener;
     TimePickerDialog.OnTimeSetListener setTimeListener;
+    Calendar calendar = Calendar.getInstance();
 
+    private AlarmManager alarmManager;
+    private PendingIntent pendingIntent;
+    private Calendar utilCalendar = Calendar.getInstance();
+    private String channelID = "idCanalNotificaciones";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_properties);
+
+        //utilCalendar nos sirve para setear la alarma
+
+        utilCalendar.set(Calendar.SECOND, 0);
+        utilCalendar.set(Calendar.MILLISECOND, 0);
 
         noteItem = (NoteElement) getIntent().getSerializableExtra("NoteItem");
 
@@ -49,7 +67,7 @@ public class NoteProperties extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerTipoNota.setAdapter(adapter);
 
-        Calendar calendar = Calendar.getInstance();
+
         final int year = calendar.get(Calendar.YEAR);
         final int month = calendar.get(Calendar.MONTH);
         final int day = calendar.get(Calendar.DAY_OF_MONTH);
@@ -73,6 +91,7 @@ public class NoteProperties extends AppCompatActivity {
                 noteItem.setTag(tag.getText().toString());
                 noteItem.setNoteType(spinnerTipoNota.getSelectedItem().toString());
                 noteItem.setHidden(isHiddenRBtn.isChecked());
+                setAlarm();
                 goToNoteEditorActivity(noteItem);
             }
         });
@@ -88,9 +107,11 @@ public class NoteProperties extends AppCompatActivity {
                         String date = day + "/" + month + "/" + year;
                         noteItem.setAlarm(date + " - " + setAlarmTime.getText());
                         setAlarmDate.setText(date);
+
                     }
                 }, year, month, day);
                 datePickerDialog.show();
+
             }
         });
 
@@ -106,6 +127,8 @@ public class NoteProperties extends AppCompatActivity {
                             Toast.makeText(NoteProperties.this, time, Toast.LENGTH_SHORT).show();
                             noteItem.setAlarm(noteItem.getDate() + " - " + time);
                             setAlarmTime.setText(time);
+                            utilCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                            utilCalendar.set(Calendar.MINUTE, minute);
                         }
                     }, hour, minute, true);
                     timePickerDialog.show();
@@ -113,6 +136,7 @@ public class NoteProperties extends AppCompatActivity {
                     Toast.makeText(NoteProperties.this, "Antes debes activar \"Crear Recordatorio\" para establecer una hora", Toast.LENGTH_SHORT).show();
                 }
             }
+
         });
 
         setDateListener = new DatePickerDialog.OnDateSetListener() {
@@ -145,8 +169,34 @@ public class NoteProperties extends AppCompatActivity {
     }
 
     public void goToNoteEditorActivity(NoteElement noteItem) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "idCanalNotificaciones")
+                    .setSmallIcon(R.drawable.ic_all_notes)
+                    .setContentTitle("Recordatorio de Nota")
+                    .setContentText("Esta es una prueba")
+                    .setAutoCancel(true)
+                    .setDefaults(NotificationCompat.DEFAULT_ALL)
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setContentIntent(pendingIntent);
+
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+            notificationManager.notify(1, builder.build());
+            Toast.makeText(this, "alarma!", Toast.LENGTH_SHORT).show();
+        }
         Intent intent = new Intent(this, NoteEditorActivity.class);
         intent.putExtra("NoteItem", noteItem);
         startActivity(intent);
+    }
+
+
+
+    public void setAlarm(){
+        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        Intent intent = new Intent(this, AlarmReciver.class);
+        pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, utilCalendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        Toast.makeText(this, "La alarma fué creada exitosamente", Toast.LENGTH_SHORT).show();
+
     }
 }

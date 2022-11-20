@@ -2,11 +2,21 @@ package com.example.notes_app;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,6 +48,11 @@ public class MainActivity extends AppCompatActivity  implements PopupMenu.OnMenu
     ImageButton visibilityMenu;
     TextView feedTitle;
 
+    //Valores estáticos de alarma y notifiaciones
+    private  String channelID = "idCanalNotificaciones";
+    private  Notification.Builder builder;
+    private  int notificationId = 1;
+
     //Variable que nos sirve para identificar cual de las opciones de visibilidad está seleccionada
     int visivilityChecker = 2;
 
@@ -46,7 +61,7 @@ public class MainActivity extends AppCompatActivity  implements PopupMenu.OnMenu
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        createNotificationChannel();
         //Recibimos una nota si es que existe una para ser recibida
         NoteElement newNote = (NoteElement) getIntent().getSerializableExtra("NoteItem");
         if (newNote != null){
@@ -224,5 +239,27 @@ public class MainActivity extends AppCompatActivity  implements PopupMenu.OnMenu
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(listAdapter);
+    }
+
+    private void createNotificationChannel(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            CharSequence name = "notesNotifChannel";
+            String description = "Canal de notificaiones para notas";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel(channelID, name, importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    @SuppressLint("UnspecifiedImmutableFlag")
+    private static void setAlarm(int i, Long timestamp, Context ctx){
+        AlarmManager alarmManager = (AlarmManager) ctx.getSystemService(ALARM_SERVICE);
+        Intent alarmIntent = new Intent(ctx, AlarmReciver.class);
+        PendingIntent pendingIntent;
+        pendingIntent = PendingIntent.getBroadcast(ctx, i, alarmIntent, PendingIntent.FLAG_ONE_SHOT);
+        alarmIntent.setData((Uri.parse("custom://" + System.currentTimeMillis())));
+        alarmManager.set(AlarmManager.RTC_WAKEUP, timestamp, pendingIntent);
     }
 }
