@@ -3,14 +3,12 @@ package com.example.notes_app
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricPrompt
 import androidx.biometric.BiometricPrompt.PromptInfo
 import androidx.core.content.ContextCompat
-import kotlinx.coroutines.delay
 import java.util.concurrent.Executor
 
 class LoginActivity : AppCompatActivity() {
