@@ -1,21 +1,31 @@
 package com.example.notes_app
 
 import android.content.Intent
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.biometric.BiometricPrompt
 import androidx.biometric.BiometricPrompt.PromptInfo
 import androidx.core.content.ContextCompat
 import java.util.concurrent.Executor
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity(), SensorEventListener {
 
     private var executor: Executor? = null
     private var biometricPrompt: BiometricPrompt? = null
     private var promptInfo: PromptInfo? = null
+    private lateinit var sensorManager: SensorManager
+    private var brightness: Sensor? = null
+    private lateinit var text: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +40,12 @@ class LoginActivity : AppCompatActivity() {
             biometricInit()
             biometricPrompt!!.authenticate(promptInfo!!)
         }
+
+        setUpSensorStuff()
+
+        //setUpSensorStuff()
+        //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        //brightness(20F)
 
     }
 
@@ -77,6 +93,55 @@ class LoginActivity : AppCompatActivity() {
             .setSubtitle("Log in using your biometric credential")
             .setNegativeButtonText("Use account password")
             .build()
+    }
+
+
+    private fun setUpSensorStuff() {
+        sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
+
+        brightness = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)
+    }
+
+
+    override fun onSensorChanged(event: SensorEvent?) {
+        if (event?.sensor?.type == Sensor.TYPE_LIGHT) {
+            val light1 = event.values[0]
+            Log.d("VAL", light1.toString())
+            brightness(light1)
+            //text.text = "Sensor: $light1\n${}"
+            //pb.setProgressWithAnimation(light1)
+        }
+    }
+
+    private fun brightness(brightness: Float): String {
+
+        return when (brightness.toInt()) {
+            in 0..50 -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                return "Pitch black"}
+            in 51..5000 -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                "Grey"}
+
+            else -> "This light will blind you"
+
+        }
+    }
+
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+        return
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Register a listener for the sensor.
+        sensorManager.registerListener(this, brightness, SensorManager.SENSOR_DELAY_NORMAL)
+    }
+
+
+    override fun onPause() {
+        super.onPause()
+        sensorManager.unregisterListener(this)
     }
 
 }
