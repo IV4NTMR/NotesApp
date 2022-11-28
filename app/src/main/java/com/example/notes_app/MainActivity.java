@@ -2,7 +2,9 @@ package com.example.notes_app;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.biometric.BiometricPrompt;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 public class MainActivity extends AppCompatActivity  implements PopupMenu.OnMenuItemClickListener{
 
@@ -47,6 +50,7 @@ public class MainActivity extends AppCompatActivity  implements PopupMenu.OnMenu
     RelativeLayout relativeLayout;
     ImageButton visibilityMenu;
     TextView feedTitle;
+
 
     //Valores estáticos de alarma y notifiaciones
     private  String channelID = "idCanalNotificaciones";
@@ -62,6 +66,8 @@ public class MainActivity extends AppCompatActivity  implements PopupMenu.OnMenu
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         createNotificationChannel();
+
+
         //Recibimos una nota si es que existe una para ser recibida
         NoteElement newNote = (NoteElement) getIntent().getSerializableExtra("NoteItem");
         if (newNote != null){
@@ -88,7 +94,11 @@ public class MainActivity extends AppCompatActivity  implements PopupMenu.OnMenu
                 popup.show();
             }
         });
+
+
     }
+
+
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
@@ -112,6 +122,9 @@ public class MainActivity extends AppCompatActivity  implements PopupMenu.OnMenu
                 return false;
         }
     }
+
+
+
 
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater inflater = getMenuInflater();

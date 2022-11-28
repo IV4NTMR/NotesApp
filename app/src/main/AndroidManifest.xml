@@ -23,6 +23,15 @@
         android:theme="@style/Theme.Notes_App"
         tools:targetApi="31">
         <activity
+            android:name=".LoginActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name=".NoteProperties"
             android:exported="false" />
         <activity
@@ -31,14 +40,10 @@
         <activity
             android:name=".MainActivity"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
-        <receiver android:name=".AlarmReciver"/>
+        <receiver android:name=".AlarmReciver" />
     </application>
 
 </manifest>
