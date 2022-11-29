@@ -60,6 +60,9 @@ public class NoteProperties extends AppCompatActivity {
         utilCalendar.set(Calendar.MILLISECOND, 0);
 
         noteItem = (NoteElement) getIntent().getSerializableExtra("NoteItem");
+        Toast.makeText(NoteProperties.this, noteItem.getNoteTitle(), Toast.LENGTH_SHORT).show();
+
+
 
         //Le pasamos valores predefinidos al spinner de tipo de nota
         adapter = ArrayAdapter.createFromResource(this, R.array.note_types_array, android.R.layout.simple_spinner_item);
@@ -169,20 +172,7 @@ public class NoteProperties extends AppCompatActivity {
     }
 
     public void goToNoteEditorActivity(NoteElement noteItem) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "idCanalNotificaciones")
-                    .setSmallIcon(R.drawable.ic_all_notes)
-                    .setContentTitle("Recordatorio de Nota")
-                    .setContentText("Esta es una prueba")
-                    .setAutoCancel(true)
-                    .setDefaults(NotificationCompat.DEFAULT_ALL)
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .setContentIntent(pendingIntent);
 
-            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-            notificationManager.notify(1, builder.build());
-            Toast.makeText(this, "alarma!", Toast.LENGTH_SHORT).show();
-        }
         Intent intent = new Intent(this, NoteEditorActivity.class);
         intent.putExtra("NoteItem", noteItem);
         startActivity(intent);
@@ -194,9 +184,12 @@ public class NoteProperties extends AppCompatActivity {
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
         Intent intent = new Intent(this, AlarmReciver.class);
-        pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
-        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, utilCalendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
-        Toast.makeText(this, "La alarma fué creada exitosamente", Toast.LENGTH_SHORT).show();
+        noteItem = (NoteElement) getIntent().getSerializableExtra("NoteItem");
+        intent.removeExtra("Title");
+        intent.putExtra("Title", noteItem.getNoteTitle());
+        pendingIntent = PendingIntent.getBroadcast(this, (int)(Math.random()*1000), intent, 0);
 
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, utilCalendar.getTimeInMillis(), 0, pendingIntent);
+        //Toast.makeText(this, "La alarma fué creada exitosamente", Toast.LENGTH_SHORT).show();
     }
 }
